@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "IS4447-habit-tracker",
-    "slug": "IS4447-habit-tracker",
+    "name": "Habitflow",
+    "slug": "habitflow",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,6 +28,18 @@
     },
     "plugins": [
       "expo-sqlite"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "10d891d8-8f26-409a-a58b-fd261352bbfc"
+      }
+    },
+    "owner": "martinosullivans-organization",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/10d891d8-8f26-409a-a58b-fd261352bbfc"
+    }
   }
 }

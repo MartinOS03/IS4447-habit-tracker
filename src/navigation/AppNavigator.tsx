@@ -20,6 +20,7 @@ const Tab = createBottomTabNavigator();
 
 const AuthGate = () => {
   const { isLoading, sessionEmail } = useAuth();
+  const { isDark } = useThemeMode();
   const [showRegister, setShowRegister] = useState(false);
 
   if (isLoading) {
@@ -39,7 +40,15 @@ const AuthGate = () => {
   }
 
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerTitle: 'Habitflow',
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        tabBarStyle: { paddingBottom: 6, height: 64 },
+        tabBarActiveTintColor: palette[isDark ? 'dark' : 'light'].primary,
+      }}
+    >
       <Tab.Screen name="Habits" component={HabitsScreen} />
       <Tab.Screen name="Records" component={RecordsScreen} />
       <Tab.Screen name="Categories" component={CategoriesScreen} />
