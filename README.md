@@ -1,13 +1,13 @@
-# HabitFlow (IS4447 Project - Option A)
+# HabitFlow (IS4447 - Option A) 122435894
 
 ## GitHub Repository URL
-Add your public repository URL here before submission.
+https://github.com/MartinOS03/IS4447-habit-tracker
 
-## Expo Link / QR
-Add your public Expo link here before submission.
+## Expo Link
+https://expo.dev/accounts/martinosullivans-organization/projects/IS4447-habit-tracker/updates/2251b04c-f7cb-42b7-b0f5-a664b6756d32
 
 ## App Description
-HabitFlow is a React Native mobile app that helps users create habits, log daily completion, organize habits by category, set weekly/monthly targets, and view visual progress insights.
+HabitFlow is a React Native mobile app that helps users create habits, log daily completion, organise habits by category, set weekly/monthly targets and view visual progress insights.
 
 ## Tech Stack
 - React Native (Expo + TypeScript)
