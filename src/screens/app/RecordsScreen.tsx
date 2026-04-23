@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { EmptyState } from '../../components/EmptyState';
+import { useThemeMode } from '../../context/ThemeContext';
 import {
   createHabitLog,
   deleteHabitLog,
@@ -10,6 +11,7 @@ import {
   getHabitLogList,
   updateHabitLog,
 } from '../../db/queries';
+import { palette } from '../../theme/colors';
 
 type LogRow = Awaited<ReturnType<typeof getHabitLogList>>[number];
 type HabitRow = Awaited<ReturnType<typeof getHabitList>>[number];
@@ -18,6 +20,8 @@ type CategoryRow = Awaited<ReturnType<typeof getCategoryList>>[number];
 const todayString = () => new Date().toISOString().slice(0, 10);
 
 export const RecordsScreen = () => {
+  const { isDark } = useThemeMode();
+  const colors = palette[isDark ? 'dark' : 'light'];
   const [logs, setLogs] = useState<LogRow[]>([]);
   const [habits, setHabits] = useState<HabitRow[]>([]);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
@@ -101,65 +105,86 @@ export const RecordsScreen = () => {
 
   return (
     <FlatList
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       data={logs}
       keyExtractor={(item) => item.id.toString()}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.contentContainer}
       ListHeaderComponent={
         <View>
-          <Text style={styles.heading}>Records (Habit Logs)</Text>
+          <Text style={[styles.heading, { color: colors.text }]}>Records (Habit Logs)</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
             placeholder="Habit ID"
+            placeholderTextColor={colors.mutedText}
             value={habitId}
             onChangeText={setHabitId}
             keyboardType="number-pad"
           />
-          <Text style={styles.hint}>Habits: {habitHint || 'Create habits first'}</Text>
+          <Text style={[styles.hint, { color: colors.mutedText }]}>Habits: {habitHint || 'Create habits first'}</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
             placeholder="Category ID"
+            placeholderTextColor={colors.mutedText}
             value={categoryId}
             onChangeText={setCategoryId}
             keyboardType="number-pad"
           />
-          <Text style={styles.hint}>Categories: {categoryHint || 'Create categories first'}</Text>
-          <TextInput style={styles.input} placeholder="Date (YYYY-MM-DD)" value={date} onChangeText={setDate} />
+          <Text style={[styles.hint, { color: colors.mutedText }]}>
+            Categories: {categoryHint || 'Create categories first'}
+          </Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
+            placeholder="Date (YYYY-MM-DD)"
+            placeholderTextColor={colors.mutedText}
+            value={date}
+            onChangeText={setDate}
+          />
+          <TextInput
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
             placeholder="Count"
+            placeholderTextColor={colors.mutedText}
             value={count}
             onChangeText={setCount}
             keyboardType="number-pad"
           />
-          <TextInput style={styles.input} placeholder="Notes" value={notes} onChangeText={setNotes} />
+          <TextInput
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
+            placeholder="Notes"
+            placeholderTextColor={colors.mutedText}
+            value={notes}
+            onChangeText={setNotes}
+          />
           <Pressable style={styles.primaryButton} onPress={handleSubmit}>
             <Text style={styles.primaryButtonText}>{editingId ? 'Update Record' : 'Add Record'}</Text>
           </Pressable>
 
-          <Text style={styles.section}>Search & Filter</Text>
+          <Text style={[styles.section, { color: colors.text }]}>Search & Filter</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
             placeholder="Text in notes"
+            placeholderTextColor={colors.mutedText}
             value={filterText}
             onChangeText={setFilterText}
           />
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
             placeholder="Start date YYYY-MM-DD"
+            placeholderTextColor={colors.mutedText}
             value={startDate}
             onChangeText={setStartDate}
           />
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
             placeholder="End date YYYY-MM-DD"
+            placeholderTextColor={colors.mutedText}
             value={endDate}
             onChangeText={setEndDate}
           />
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
             placeholder="Filter category ID"
+            placeholderTextColor={colors.mutedText}
             value={filterCategoryId}
             onChangeText={setFilterCategoryId}
             keyboardType="number-pad"
@@ -171,12 +196,12 @@ export const RecordsScreen = () => {
       }
       ListEmptyComponent={<EmptyState title="No records found" subtitle="Add a log or adjust filters." />}
       renderItem={({ item }) => (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{item.habitName}</Text>
-          <Text style={styles.cardMeta}>
+        <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.card }]}>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>{item.habitName}</Text>
+          <Text style={[styles.cardMeta, { color: colors.mutedText }]}>
             {item.date} | Count: {item.count} | {item.categoryName}
           </Text>
-          {!!item.notes && <Text style={styles.cardNotes}>{item.notes}</Text>}
+          {!!item.notes && <Text style={[styles.cardNotes, { color: colors.text }]}>{item.notes}</Text>}
           <View style={styles.row}>
             <Pressable
               style={styles.smallButton}

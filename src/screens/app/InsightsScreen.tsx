@@ -3,11 +3,15 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react
 import { useFocusEffect } from '@react-navigation/native';
 import { BarChart } from 'react-native-chart-kit';
 import { EmptyState } from '../../components/EmptyState';
+import { useThemeMode } from '../../context/ThemeContext';
 import { getDailyLogTotals } from '../../db/queries';
+import { palette } from '../../theme/colors';
 
 type DailyTotalRow = Awaited<ReturnType<typeof getDailyLogTotals>>[number];
 
 export const InsightsScreen = () => {
+  const { isDark } = useThemeMode();
+  const colors = palette[isDark ? 'dark' : 'light'];
   const [rows, setRows] = useState<DailyTotalRow[]>([]);
   const [range, setRange] = useState<'daily' | 'weekly' | 'monthly'>('daily');
 
@@ -46,17 +50,23 @@ export const InsightsScreen = () => {
   );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.heading}>Insights</Text>
-      <Text style={styles.subtitle}>Daily completion trend from stored habit logs.</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+      <Text style={[styles.heading, { color: colors.text }]}>Insights</Text>
+      <Text style={[styles.subtitle, { color: colors.mutedText }]}>Daily completion trend from stored habit logs.</Text>
       <View style={styles.toggleRow}>
         {(['daily', 'weekly', 'monthly'] as const).map((value) => (
           <Pressable
             key={value}
-            style={[styles.toggle, range === value && styles.toggleActive]}
+            style={[
+              styles.toggle,
+              { borderColor: colors.border, backgroundColor: colors.card },
+              range === value && styles.toggleActive,
+            ]}
             onPress={() => setRange(value)}
           >
-            <Text style={[styles.toggleText, range === value && styles.toggleTextActive]}>{value}</Text>
+            <Text style={[styles.toggleText, { color: colors.text }, range === value && styles.toggleTextActive]}>
+              {value}
+            </Text>
           </Pressable>
         ))}
       </View>
@@ -71,11 +81,11 @@ export const InsightsScreen = () => {
           yAxisSuffix=""
           fromZero
           chartConfig={{
-            backgroundGradientFrom: '#FFFFFF',
-            backgroundGradientTo: '#FFFFFF',
+            backgroundGradientFrom: colors.card,
+            backgroundGradientTo: colors.card,
             decimalPlaces: 0,
             color: (opacity = 1) => `rgba(79, 70, 229, ${opacity})`,
-            labelColor: () => '#334155',
+            labelColor: () => colors.text,
           }}
           style={styles.chart}
         />

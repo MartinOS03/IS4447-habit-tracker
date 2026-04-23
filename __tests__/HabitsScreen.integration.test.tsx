@@ -19,6 +19,14 @@ jest.mock('@react-navigation/native', () => ({
   useFocusEffect: (callback: () => void) => callback(),
 }));
 
+jest.mock('../src/context/ThemeContext', () => ({
+  useThemeMode: () => ({
+    isDark: false,
+    mode: 'light',
+    toggleTheme: jest.fn(),
+  }),
+}));
+
 describe('HabitsScreen integration', () => {
   it('shows seeded habit data after load', async () => {
     const { getByText } = render(<HabitsScreen />);

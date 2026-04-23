@@ -1,13 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { EmptyState } from '../../components/EmptyState';
+import { useThemeMode } from '../../context/ThemeContext';
 import { createTarget, getCategoryList, getTargetProgress } from '../../db/queries';
+import { palette } from '../../theme/colors';
 
 type TargetRow = Awaited<ReturnType<typeof getTargetProgress>>[number];
 type CategoryRow = Awaited<ReturnType<typeof getCategoryList>>[number];
 
 export const TargetsScreen = () => {
+  const { isDark } = useThemeMode();
+  const colors = palette[isDark ? 'dark' : 'light'];
   const [rows, setRows] = useState<TargetRow[]>([]);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
   const [name, setName] = useState('');
@@ -28,35 +32,45 @@ export const TargetsScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Targets</Text>
-      <TextInput style={styles.input} placeholder="Target name" value={name} onChangeText={setName} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.heading, { color: colors.text }]}>Targets</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
+        placeholder="Target name"
+        placeholderTextColor={colors.mutedText}
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
         placeholder="Period: weekly or monthly"
+        placeholderTextColor={colors.mutedText}
         value={period}
         onChangeText={(value) => setPeriod(value === 'monthly' ? 'monthly' : 'weekly')}
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
         placeholder="Target count"
+        placeholderTextColor={colors.mutedText}
         value={targetCount}
         keyboardType="number-pad"
         onChangeText={setTargetCount}
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
         placeholder="Optional category ID"
+        placeholderTextColor={colors.mutedText}
         value={categoryId}
         onChangeText={setCategoryId}
         keyboardType="number-pad"
       />
-      <Text style={styles.hint}>
+      <Text style={[styles.hint, { color: colors.mutedText }]}>
         Categories: {categories.map((c) => `${c.id}:${c.name}`).join(' | ') || 'None'}
       </Text>
       <Pressable
         style={styles.button}
         onPress={async () => {
+          Keyboard.dismiss();
           if (!name.trim()) {
             return;
           }
@@ -74,15 +88,18 @@ export const TargetsScreen = () => {
         data={rows}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        onScrollBeginDrag={Keyboard.dismiss}
         ListEmptyComponent={<EmptyState title="No targets yet" subtitle="Define weekly and monthly goals." />}
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.meta}>
+          <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.card }]}>
+            <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
+            <Text style={[styles.meta, { color: colors.mutedText }]}>
               {item.period.toUpperCase()} target: {item.targetCount}
             </Text>
-            <Text style={styles.meta}>Current: {item.current}</Text>
-            <Text style={styles.meta}>
+            <Text style={[styles.meta, { color: colors.mutedText }]}>Current: {item.current}</Text>
+            <Text style={[styles.meta, { color: colors.mutedText }]}>
               {item.isMet
                 ? item.isExceeded
                   ? `Exceeded by ${item.current - item.targetCount}`

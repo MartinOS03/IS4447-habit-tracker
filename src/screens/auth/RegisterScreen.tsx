@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FormField } from '../../components/FormField';
 import { useAuth } from '../../context/AuthContext';
+import { useThemeMode } from '../../context/ThemeContext';
+import { palette } from '../../theme/colors';
 
 type RegisterScreenProps = {
   onSwitchToLogin: () => void;
@@ -9,6 +11,8 @@ type RegisterScreenProps = {
 
 export const RegisterScreen = ({ onSwitchToLogin }: RegisterScreenProps) => {
   const { signUp } = useAuth();
+  const { isDark } = useThemeMode();
+  const colors = palette[isDark ? 'dark' : 'light'];
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,8 +26,8 @@ export const RegisterScreen = ({ onSwitchToLogin }: RegisterScreenProps) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create account</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.title, { color: colors.text }]}>Create account</Text>
       <FormField
         label="Display Name"
         placeholder="Your name"
@@ -47,7 +51,7 @@ export const RegisterScreen = ({ onSwitchToLogin }: RegisterScreenProps) => {
         <Text style={styles.primaryButtonText}>Register</Text>
       </Pressable>
       <Pressable onPress={onSwitchToLogin}>
-        <Text style={styles.link}>Already have an account? Login</Text>
+        <Text style={[styles.link, { color: colors.primary }]}>Already have an account? Login</Text>
       </Pressable>
     </View>
   );

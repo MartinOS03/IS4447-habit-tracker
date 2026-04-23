@@ -3,10 +3,12 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { useThemeMode } from '../../context/ThemeContext';
 import { deleteProfileData } from '../../db/seed';
+import { palette } from '../../theme/colors';
 
 export const SettingsScreen = () => {
   const { sessionEmail, signOut } = useAuth();
-  const { mode, toggleTheme } = useThemeMode();
+  const { mode, toggleTheme, isDark } = useThemeMode();
+  const colors = palette[isDark ? 'dark' : 'light'];
 
   const handleDeleteProfile = async () => {
     if (!sessionEmail) {
@@ -22,16 +24,16 @@ export const SettingsScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Settings</Text>
-      <Text style={styles.meta}>Signed in as: {sessionEmail ?? 'none'}</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.heading, { color: colors.text }]}>Settings</Text>
+      <Text style={[styles.meta, { color: colors.mutedText }]}>Signed in as: {sessionEmail ?? 'none'}</Text>
 
-      <Pressable style={styles.button} onPress={toggleTheme}>
-        <Text style={styles.buttonText}>Toggle Theme (Current: {mode})</Text>
+      <Pressable style={[styles.button, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={toggleTheme}>
+        <Text style={[styles.buttonText, { color: colors.text }]}>Toggle Theme (Current: {mode})</Text>
       </Pressable>
 
-      <Pressable style={styles.button} onPress={signOut}>
-        <Text style={styles.buttonText}>Logout</Text>
+      <Pressable style={[styles.button, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={signOut}>
+        <Text style={[styles.buttonText, { color: colors.text }]}>Logout</Text>
       </Pressable>
 
       <Pressable style={[styles.button, styles.danger]} onPress={handleDeleteProfile}>

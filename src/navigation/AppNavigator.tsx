@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ThemeProvider, useThemeMode } from '../context/ThemeContext';
@@ -21,6 +21,7 @@ const Tab = createBottomTabNavigator();
 const AuthGate = () => {
   const { isLoading, sessionEmail } = useAuth();
   const { isDark } = useThemeMode();
+  const colors = palette[isDark ? 'dark' : 'light'];
   const [showRegister, setShowRegister] = useState(false);
 
   if (isLoading) {
@@ -44,9 +45,12 @@ const AuthGate = () => {
       screenOptions={{
         headerShown: true,
         headerTitle: 'Habitflow',
+        headerStyle: { backgroundColor: colors.card },
+        headerTitleStyle: { color: colors.text },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
-        tabBarStyle: { paddingBottom: 6, height: 64 },
-        tabBarActiveTintColor: palette[isDark ? 'dark' : 'light'].primary,
+        tabBarStyle: { paddingBottom: 6, height: 64, backgroundColor: colors.card, borderTopColor: colors.border },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.mutedText,
       }}
     >
       <Tab.Screen name="Habits" component={HabitsScreen} />
@@ -80,8 +84,32 @@ const RootNavigator = () => {
     );
   }
 
+  const navTheme = isDark
+    ? {
+        ...DarkTheme,
+        colors: {
+          ...DarkTheme.colors,
+          background: palette.dark.background,
+          card: palette.dark.card,
+          text: palette.dark.text,
+          border: palette.dark.border,
+          primary: palette.dark.primary,
+        },
+      }
+    : {
+        ...DefaultTheme,
+        colors: {
+          ...DefaultTheme.colors,
+          background: palette.light.background,
+          card: palette.light.card,
+          text: palette.light.text,
+          border: palette.light.border,
+          primary: palette.light.primary,
+        },
+      };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       <AuthGate />
     </NavigationContainer>
   );

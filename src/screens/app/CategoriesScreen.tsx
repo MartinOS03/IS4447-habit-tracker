@@ -2,11 +2,15 @@ import React, { useCallback, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { EmptyState } from '../../components/EmptyState';
+import { useThemeMode } from '../../context/ThemeContext';
 import { createCategory, getCategoryList, updateCategory } from '../../db/queries';
+import { palette } from '../../theme/colors';
 
 type CategoryRow = Awaited<ReturnType<typeof getCategoryList>>[number];
 
 export const CategoriesScreen = () => {
+  const { isDark } = useThemeMode();
+  const colors = palette[isDark ? 'dark' : 'light'];
   const [rows, setRows] = useState<CategoryRow[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [name, setName] = useState('');
@@ -24,11 +28,29 @@ export const CategoriesScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Categories</Text>
-      <TextInput style={styles.input} placeholder="Category name" value={name} onChangeText={setName} />
-      <TextInput style={styles.input} placeholder="Color hex" value={color} onChangeText={setColor} />
-      <TextInput style={styles.input} placeholder="Icon name" value={icon} onChangeText={setIcon} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.heading, { color: colors.text }]}>Categories</Text>
+      <TextInput
+        style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
+        placeholder="Category name"
+        placeholderTextColor={colors.mutedText}
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
+        placeholder="Color hex"
+        placeholderTextColor={colors.mutedText}
+        value={color}
+        onChangeText={setColor}
+      />
+      <TextInput
+        style={[styles.input, { borderColor: colors.border, backgroundColor: colors.card, color: colors.text }]}
+        placeholder="Icon name"
+        placeholderTextColor={colors.mutedText}
+        value={icon}
+        onChangeText={setIcon}
+      />
       <Pressable
         style={styles.button}
         onPress={async () => {
@@ -54,10 +76,10 @@ export const CategoriesScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={<EmptyState title="No categories" subtitle="Create your first category." />}
         renderItem={({ item }) => (
-          <View style={styles.row}>
+          <View style={[styles.row, { borderColor: colors.border, backgroundColor: colors.card }]}>
             <View style={[styles.dot, { backgroundColor: item.color }]} />
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.icon}>{item.icon}</Text>
+            <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
+            <Text style={[styles.icon, { color: colors.mutedText }]}>{item.icon}</Text>
             <Pressable
               onPress={() => {
                 setEditingId(item.id);
